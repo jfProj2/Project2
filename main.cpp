@@ -9,7 +9,7 @@ Professor: Michael Cotterell
 File: main.cpp
 #########
 <FINISH DESCRIPTION>
-This is the main file...
+This is the main file...Check
 <FINISH DESCRIPTION>
 **/
 
