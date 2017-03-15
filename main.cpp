@@ -23,7 +23,17 @@ This is the main file...Check
 
 using namespace std;
 
-int main() //At somepoint we need to include execution-time parameters to the main method
+int main(const int argc, const char * argv[]) //At somepoint we need to include execution-time parameters to the main method
+//like in lab, argc will give us 1 if correct, argv[0] will be initial file to open (first time - not open in menu)
 {
+  if(argc != 1)
+  {
+    cout << "You must enter one file name." << endl;
+  }
+  else
+  {
+   // Tui(argv[0]); //Opens ncurses window
+    cout << "Testing: file name entered:" << endl;
+  }
   return 22; //Returning this # is my habit :P
 }
