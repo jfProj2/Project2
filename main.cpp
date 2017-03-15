@@ -1,17 +1,19 @@
 /**
 PROJECT 2
-#########
-Fick-Joiner Productions
-#########
-Due: March 27th, 2017 @ 11:55 PM
-Professor: Michael Cotterell
-
+**************
 File: main.cpp
-#########
-<FINISH DESCRIPTION>
-This is the main file...Check
-<FINISH DESCRIPTION>
-**/
+
+Date: 3/15/2017
+
+Authors: Ryan Joiner (810638856)
+         Emma Fick   (810609119)
+
+Prof. Michael Cotterell
+**************
+<NEED DESCRIPTION>
+This is the main operating hub of our project...
+<NEED DESCRIPTION>
+
 
 #include <iostream>
 #include <iomanip>
