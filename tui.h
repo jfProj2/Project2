@@ -23,3 +23,6 @@ class tui {
   createMainWin();
   createMenu();
   createErrWin();
+
+};
+
