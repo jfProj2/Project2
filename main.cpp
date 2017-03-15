@@ -1,18 +1,16 @@
 /**
 PROJECT 2
-**************
+#########
+Fick-Joiner Productions
+#########
+Due: March 27th, 2017 @ 11:55 PM
+Professor: Michael Cotterell
+
 File: main.cpp
-
-Date: 3/15/2017
-
-Authors: Ryan Joiner (810638856)
-         Emma Fick   (810609119)
-
-Prof. Michael Cotterell
-**************
-<NEED DESCRIPTION>
-This is the main operating hub of our project...
-<NEED DESCRIPTION>
+#########
+<FINISH DESCRIPTION>
+This is the main file...Check
+<FINISH DESCRIPTION>
 **/
 
 #include <iostream>
@@ -28,7 +26,7 @@ using namespace std;
 int main(const int argc, const char * argv[]) //At somepoint we need to include execution-time parameters to the main method
 //like in lab, argc will give us 1 if correct, argv[0] will be initial file to open (first time - not open in menu)
 {
-  switch(argc){
+    switch(argc){
         case (1):
             tui();
             break;
@@ -36,8 +34,10 @@ int main(const int argc, const char * argv[]) //At somepoint we need to include 
             tui(argv[1]);
             break;
         default:
-            cout << "You must enter a single file." <<endl;
+            cout << "You must enter a single file.";
             break;
-  }
-  return 22; //Returning this # is my habit :P
+    }
+    
+    
+    return 22; //Returning this # is my habit :P
 }
