@@ -1,8 +1,6 @@
 /**
-
 PROJECT 2
 **************
-
 File: io.h
 
 Date: 3/15/2017
@@ -12,12 +10,9 @@ Authors: Ryan Joiner (810638856)
 
 Prof. Michael Cotterell
 **************
-
 <NEED DESCRIPTION>
-
 This is the header file for the 'io' class functions...
 <NEED DESCRIPTION>
-
 
 **/
 //CREATE THE HEADER GUARD
