@@ -38,6 +38,7 @@ class TUI {
   private:
   //inst vars
    WINDOW *main_win;
+   MENU *main_menu;
   //WINDOW *menu_win; //If these windows aren't always here, should they be
   //WINDOW *err_win;  // instance vars? 
    FILE* File;
