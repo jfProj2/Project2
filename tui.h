@@ -1,34 +1,61 @@
+/**
+PROJECT 2
+**************
+
+File: tui.h
+
+Date: 3/16/2017
+
+Authors: Ryan Joiner (810638856)
+         Emma Fick   (810609119)
+
+Prof. Michael Cotterell
+**************
+
+<NEED DESCRIPTION>
+
+This is the header file for the 'tui' class functions...
+<NEED DESCRIPTION>
+**/
+
+//INITIALIZE THE HEADER GUARD
 #ifndef TUI_H
 #define TUI_H
+
+//INCLUDES
 #include <iostream>
+#include <iomanip>
+#include <cerrno>
+#include <fstream>
 #include <string>
+#include <cstdio>
 #include <ncurses.h>
 #include "io.h"
 
 using namespace std;
 
-class tui {
-
+class TUI {
+  private:
   //inst vars
-  WINDOW *main_win;
+   WINDOW *main_win;
   //WINDOW *menu_win; //If these windows aren't always here, should they be
   //WINDOW *err_win;  // instance vars? 
-  FILE* file
+   FILE* File;
   
 
  public:
 
   /**Opens initial tui with no file specified**/
-  tui();
+  TUI();
 
   /**Opens initial tui with file specified**/
-  tui(const char * fileptr);
+  TUI(const char * fileptr);
 
   /**Opens tui with file specified in menu**/
-  tui(FILE* f);
+  TUI(FILE* f);
 
   /**Destructor*/
-  ~tui();
+  ~TUI();
   WINDOW *create_main_win();
   WINDOW *create_menu_win();
   WINDOW *create_err_win();
