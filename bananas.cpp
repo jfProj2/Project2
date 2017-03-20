@@ -97,7 +97,7 @@ int main(const int argc, const char *argv[]){
  while((ch = getch()) != KEY_UP)
     {
       switch(ch){
-      case KEY_F(1): //This opens menu
+      case KEY_LEFT: //This opens menu
              /* menuopen = true;
               menuwin = create_menu_win(mheight, mwidth, my, mx, menuopen);
               wrefresh(menuwin);
