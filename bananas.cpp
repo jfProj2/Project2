@@ -11,7 +11,7 @@ using namespace std;
 const char* choices[] = {"Open","Save","Save As", "Exit"};
 
 
-void init_menu(MENU* m, WINDOW *mwin);
+bool init_menu(MENU* m, WINDOW *mwin);
 //WINDOW* create_err_win(int height, int width, int my, int mx, bool open);
 int main(const int argc, const char *argv[]){
 
@@ -31,10 +31,7 @@ int main(const int argc, const char *argv[]){
   int eheight,ewidth, ex, ey;
   int mheight,mwidth, mx, my;
   int ch;
-    
-
-//  bool menuopen = false;
-
+  
   //will be from the user input
   string filename = "file name";
 
@@ -46,8 +43,6 @@ int main(const int argc, const char *argv[]){
   noecho();
     
   
-    
-
   getmaxyx(stdscr, height, width); //size of screen
 
   
@@ -77,14 +72,13 @@ int main(const int argc, const char *argv[]){
   menu = new_menu((ITEM**)items);
   //create_menu(menu);
   menuwin = newwin(mheight,mwidth,my,mx);
-  menusub = derwin(menuwin,mheight/2,mwidth/2,mheight/3,mwidth/3);
+  menusub = derwin(menuwin,mheight/2,mwidth/2,mheight*.4,mwidth/3);
   keypad(menuwin,true);
   set_menu_win(menu,menuwin);
   set_menu_sub(menu,menusub);
   mvwprintw(menuwin,2,(mwidth/2)-4,"Muh Menu");
   set_menu_mark(menu, "> ");
   box(menuwin,0,0);
-  box(menusub,0,0);
   refresh();
 
   //I like this text 'cause it never moves...
@@ -112,15 +106,31 @@ int main(const int argc, const char *argv[]){
               wrefresh(editwin);
               delwin(menuwin);
               break;*/
-	init_menu(menu,menuwin);
+	bool open = init_menu(menu,menuwin);
+	if(!open){
+	  unpost_menu(menu);
+	  refresh();
+	  wrefresh(win);
+	  wrefresh(editwin);
+	}
+	  
+	  //}
+	
       }
+      wrefresh(win);
+      wrefresh(editwin);
+    
     }
     
-    free_menu(menu);
-    for(int i = 0; i < n_choices; i++){
-        free_item(items[i]);
-    }
-  //delwin(menuwin);*/
+    
+ delwin(menuwin);
+	  delwin(menusub);
+   free_menu(menu);
+	  for(int i = 0; i < n_choices; i++){
+	    free_item(items[i]);
+	  }
+    
+  //
   delwin(editwin);
   delwin(win);
   endwin();
@@ -151,12 +161,13 @@ int main(const int argc, const char *argv[]){
 
 //enabled scrolling
 //to do: close menu, connect actions to menu items.
-void init_menu(MENU* m, WINDOW* mwin){
+bool init_menu(MENU* m, WINDOW* mwin){
   int c;
         post_menu(m);
         wrefresh(mwin);
+	bool open = false;
 	while((c = wgetch(mwin)) != KEY_F(1)){
-	  
+	  //open = true;
 	  switch(c){
 
 	  case KEY_DOWN:
@@ -165,11 +176,17 @@ void init_menu(MENU* m, WINDOW* mwin){
 	  case KEY_UP:
 	    menu_driver(m, REQ_UP_ITEM);
 	    break;
+	   
 
 	  }
-
+	  ITEM * current = current_item(m);
+	  
+	  wrefresh(mwin);
+	  
 	}
 	unpost_menu(m);
+	delwin(mwin);
+	return false;
 	
 
 }
