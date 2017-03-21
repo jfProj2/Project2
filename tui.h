@@ -16,6 +16,7 @@ Prof. Michael Cotterell
 
 This is the header file for the 'tui' class functions...
 <NEED DESCRIPTION>
+
 **/
 
 //INITIALIZE THE HEADER GUARD
@@ -25,24 +26,37 @@ This is the header file for the 'tui' class functions...
 //INCLUDES
 #include <iostream>
 #include <iomanip>
-#include <cerrno>
-#include <fstream>
+#include <cstring>
 #include <string>
 #include <cstdio>
+#include <curses.h>
 #include <ncurses.h>
+#include <menu.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <errno.h>
+
 #include "io.h"
 
 using namespace std;
 
 class TUI {
-  private:
+ private:
   //inst vars
-   WINDOW *main_win;
-   MENU *main_menu;
-  //WINDOW *menu_win; //If these windows aren't always here, should they be
-  //WINDOW *err_win;  // instance vars? 
-   FILE* File;
-  
+  WINDOW *bg_win;
+  WINDOW *edit_win;
+  WINDOW *menu_win;
+  WINDOW *menu_subwin;
+
+  MENU *main_menu;
+ 
+  ITEM **items;
+  ITEM *cur_item;
+
+  //const char* choices[] = {"Open","Save","Save As", "Exit"};
 
  public:
 
@@ -50,17 +64,20 @@ class TUI {
   TUI();
 
   /**Opens initial tui with file specified**/
-  TUI(const char * fileptr);
+  TUI(string fileName);
 
   /**Opens tui with file specified in menu**/
-  TUI(FILE* f);
+  //TUI(int FileDesc);
 
   /**Destructor*/
   ~TUI();
-  WINDOW *create_main_win();
-  WINDOW *create_menu_win();
-  WINDOW *create_err_win();
+
+  //WINDOW* create_main_win();
+  //WINDOW* create_menu_win();
+  //WINDOW* create_err_win();
   
 
 };
 
+
+#endif
