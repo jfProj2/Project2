@@ -88,7 +88,7 @@ int main(const int argc, const char *argv[]){
   //this text will depend on the name of the file
   mvwprintw(win,height-1, 0, filename.c_str()); //IO HERE
 
-  mvwprintw(editwin, ey, ex, "edit here"); //REMOVE 
+   mvwprintw(editwin, ey, ex, "edit here"); //REMOVE 
 
   wrefresh(win);
   wrefresh(editwin); 
@@ -97,7 +97,7 @@ int main(const int argc, const char *argv[]){
  while((ch = getch()) != KEY_UP)
     {
       switch(ch){
-      case KEY_LEFT: //This opens menu
+      case KEY_F(1): //This opens menu
              /* menuopen = true;
               menuwin = create_menu_win(mheight, mwidth, my, mx, menuopen);
               wrefresh(menuwin);
@@ -106,7 +106,8 @@ int main(const int argc, const char *argv[]){
               wrefresh(editwin);
               delwin(menuwin);
               break;*/
-	bool open = init_menu(menu,menuwin);
+
+       	bool open = init_menu(menu,menuwin);
 	if(!open){
 	  unpost_menu(menu);
 	  refresh();
@@ -166,6 +167,7 @@ bool init_menu(MENU* m, WINDOW* mwin){
         post_menu(m);
         wrefresh(mwin);
 	bool open = false;
+	char * choice;
 	while((c = wgetch(mwin)) != KEY_F(1)){
 	  //open = true;
 	  switch(c){
@@ -176,9 +178,15 @@ bool init_menu(MENU* m, WINDOW* mwin){
 	  case KEY_UP:
 	    menu_driver(m, REQ_UP_ITEM);
 	    break;
+	  case 10:
+	    char temp[200];
+	    ITEM **items;
+	    items = menu_items(m);
+	    
 	   
 
 	  }
+	  
 	  ITEM * current = current_item(m);
 	  
 	  wrefresh(mwin);
