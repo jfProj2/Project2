@@ -1,43 +1,80 @@
 /**
 PROJECT 2
 **************
-Date: 3/15/2017
+
+File: main.cpp
+
+Date: 3/16/2017
 
 Authors: Ryan Joiner (810638856)
          Emma Fick   (810609119)
 
 Prof. Michael Cotterell
 **************
+
 <NEED DESCRIPTION>
-This is the main hub for our project...
+
+This is the main method for Project2.
+
 <NEED DESCRIPTION>
 **/
 
+//INCLUDES
 #include <iostream>
 #include <iomanip>
-#include <ncurses.h>
-#include <menu.h>
 #include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <curses.h>
+#include <ncurses.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <errno.h>
+
 #include "io.h"
 #include "tui.h"
 
 using namespace std;
 
-int main(const int argc, const char * argv[]) //At somepoint we need to include execution-time parameters to the main method
-//like in lab, argc will give us 1 if correct, argv[0] will be initial file to open (first time - not open in menu)
-{
-    switch(argc){
-        case (1):
-            tui();
-            break;
-        case (2):
-            tui(argv[1]);
-            break;
-        default:
-            cout << "You must enter a single file.";
-            break;
+//Prototype for the main with arguments
+int main(const int argc, const char * argv[]);
+
+int main(const int argc, const char * argv[]){
+  int errorNum = 0;
+
+  if(argc == 1){
+    TUI editor;
+    
+  }
+  else if(argc == 2){
+    int FileDesc = IO::openFile(argv[1]);
+    //If failure to open, create an error window inside the editor
+    /** 
+    if(FileDesc < 0){
+      errorNum = errno;
+      printf("1730ed: [%s]: Error.\n", argv[1].c_str());
+      printf("errno: %i - %s\n\n", errorNum, strerror(errorNum));
+      return EXIT_FAILURE;
     }
-    
-    
-    return 22; //Returning this # is my habit :P
+    else{
+
+
+    }
+    **/
+  }
+  else{
+    printf("ERROR: Too many arguments to ./1730ed\n");
+    printf("Retry run command with proper syntax\n\n");
+    printf("Ex: ./1730ed   or   ./1730ed filename.txt\n");
+    return EXIT_FAILURE;
+  }
+
+  return 22;
 }
+
+
+
+
