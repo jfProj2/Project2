@@ -24,36 +24,55 @@ using namespace std;
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
+
+ 
+
 //PROTOTYPES
-string load_file(int &fd, string fileName);
+string load_file(const char * fileptr);
 bool close_file(int &fd);
+bool init_menu_window(MENU* menu, WINDOW* win, ITEM* current);
+void run_editor(const char * fileptr);
+string get_filename(const char * fileptr);
+void file_to_screen(string data, WINDOW * win, int height, int width);
 int show_menu_window(int menu_h, int menu_w, int menu_y, int menu_x);
-void run_editor(string fileName);
-
-//FUNCTION DEFINITIONS
-
-
-string load_file(int &fd, string fileName){
-  fd = open(fileName.c_str(), O_RDWR | O_CREAT | O_APPEND);
+string load_file(const char * fileptr){
+  string filename = get_filename(fileptr);
+  int fd = open(filename.c_str(), O_RDWR | O_CREAT | O_APPEND);
   if(fd < 0){
-    int errorNum = errno;
-    printf("\nload_file: [%s]: Error.\n",fileName.c_str());
-    printf("errno: %i - %s\n\n",errorNum, strerror(errorNum));
-    return "-1";
+    //int errorNum = errno;
+    //error window
+    //return int referring to type of error
+    return "";
   }
-  unsigned char buffer[1024];
-  size_t bytes_read;
-  string data = "";
-  do{
+  else{
+    const int BUFF_SIZE = 1024;
+    char buffer[BUFF_SIZE];
+    int n = 0;
+    string data = "";
+    while((n = read(fd, buffer, BUFF_SIZE)) > 0){
+    //write?
+    	for(int i = 0; i < n; i++){
+		data += buffer[i];
+      	}
+    }
+    return data;
+  }
+  
+  
+  /*do{
     bytes_read = read(fd, buffer, sizeof(buffer));
     
     for(unsigned int i=0; i<bytes_read; i++)
       data += buffer[i];
 
   }while(bytes_read == sizeof(buffer));
-  return data;
+  return data;*/
+  
 
 }
+
+
+
 
 bool close_file(int &fd){
   fd = close(fd);
@@ -65,6 +84,170 @@ bool close_file(int &fd){
   }
   return true;
 }
+
+
+bool init_menu_window(MENU* menu, WINDOW* win, ITEM* current){
+  int ch = 4;
+  post_menu(menu);
+  wrefresh(win);
+  while(ch != KEY_F(1)){
+    ch = wgetch(win);
+    switch(ch){
+
+    case KEY_DOWN:
+      menu_driver(menu, REQ_DOWN_ITEM);
+      break;
+    case KEY_UP:
+      menu_driver(menu, REQ_UP_ITEM);
+      break;
+
+
+    }
+    current = current_item(menu);
+
+    wrefresh(win);
+
+  }
+  unpost_menu(menu);
+  wrefresh(win);
+  return false;
+}
+
+void run_editor(const char *fileptr){
+  WINDOW *term_win;
+  WINDOW *edit_win;
+  string filename = get_filename(fileptr);
+  initscr();
+  cbreak();
+  noecho();
+
+  int term_h, term_w;
+  getmaxyx(stdscr, term_h, term_w);
+  
+  int menu_h = term_h/2;
+  int menu_w = term_w/2;
+  int menu_x = (term_w / 4), menu_y = (term_h / 4);
+
+  int edit_x = 1, edit_y = 1;
+  int edit_h = (term_h * 0.90);
+  int edit_w = (term_w * 0.90);
+  term_win = newwin(term_h, term_w, 0, 0);
+  edit_win = derwin(term_win, edit_h, edit_w, edit_x, edit_y);
+
+  box(edit_win, '*', '*');
+  touchwin(edit_win);
+  keypad(term_win, true);
+  keypad(edit_win, true);
+
+  refresh();
+
+  mvwprintw(term_win, 0, 0, "F1: Menu");
+  mvwprintw(term_win, 0, (term_w/2)-18, "CSCI 1730 Editor");
+  mvwprintw(term_win, (term_h-1), 0, filename.c_str());
+
+  file_to_screen(load_file(fileptr), edit_win, edit_h, edit_w);
+  
+
+  wrefresh(term_win);
+  wrefresh(edit_win);
+  int key = 1;
+  while(key != KEY_UP){
+    key = wgetch(edit_win);
+    switch(key){
+    case KEY_F(1):
+      int selection = show_menu_window(menu_h, menu_w, menu_y, menu_x);
+      wrefresh(term_win);
+      if(selection == 0){
+	 wrefresh(term_win);
+         wrefresh(edit_win);	 
+      }
+      else if(selection == 1){
+
+      }
+      else if(selection == 2){
+
+      }
+      else if(selection == 3){
+
+      }
+      else if(selection == 4){
+
+      }
+      break;
+    }
+    wrefresh(term_win);
+    wrefresh(edit_win);
+  }
+
+  delwin(edit_win);
+  delwin(term_win);;
+  endwin();
+}
+
+
+string get_filename(const char * fileptr){
+  if (fileptr == nullptr){
+    return "Untitled";
+  }
+  else {
+    string fn = fileptr;
+    return fn;
+  }
+}
+
+void file_to_screen(string data, WINDOW * win, int h, int w){
+  int x = 1;
+  int y = 1;
+  int height = h - 1;
+  int width = w - 1;
+  // getmaxyx(win, height, width);
+  int ct = 0;
+  for(int i = 0; i < data.size(); i++){
+    char ch = data[i];
+    /*
+    if((ch == ' ' )||(ch == '\n')){
+      int ct2 = 0;
+      for(int j = i; j < data.size(); j++){
+	if((data[j] != ' ') && (data[j] != '\n')){
+	  ct2++;
+	}
+      }
+      if(ct2 != 0){
+	ct++;
+      }
+    }
+    else{
+      ct++;
+    }
+    bool eof = false;
+    for(int i = 0; i < data.size(); i++){
+    char ch = data[i];
+    
+    if((ch == ' ' )||(ch == '\n')){
+      int ct = 0;
+      for(int j = i; j < data.size(); j++){
+	if((data[j] != ' ') && (data[j] != '\n')){
+	  ct++;
+	}
+      }
+      if (ct == 0){     //no other characters past last space or newline means end of text and therefore
+	eof = true;     //where we start typing
+      }
+    }
+    if(!eof){*/
+      mvwprintw(win, x, y, "%c", ch);
+      if(y == (width - 1) || ch == '\n'){
+	x++;
+	y = 1;
+	//mvwprintw(win, x, y,"%c", '\n');
+      }
+      y++;
+    
+  
+ 
+}
+}
+
 
 int show_menu_window(int menu_h, int menu_w, int menu_y, int menu_x){
   
@@ -134,76 +317,4 @@ int show_menu_window(int menu_h, int menu_w, int menu_y, int menu_x){
   return choice; //USER EXITS MENU (F1 Pressed)
 }
 
-void run_editor(string fileName){
- 
-  WINDOW *term_win;
-  WINDOW *edit_win;
-  
-  initscr();
-  cbreak();
-  noecho();
-
-  int term_h, term_w;
-  getmaxyx(stdscr, term_h, term_w);
-  
-  int menu_h = term_h/2;
-  int menu_w = term_w/2;
-  int menu_x = (term_w / 4), menu_y = (term_h / 4);
-
-  int edit_x = 1, edit_y = 1;
-  int edit_h = (term_h * 0.90);
-  int edit_w = (term_w * 0.90);
-  term_win = newwin(term_h, term_w, 0, 0);
-  edit_win = derwin(term_win, edit_h, edit_w, edit_x, edit_y);
-
-  box(edit_win, '*', '*');
-  touchwin(edit_win);
-  keypad(term_win, true);
-  keypad(edit_win, true);
-
-  refresh();
-
-  mvwprintw(term_win, 0, 0, "F1: Menu");
-  mvwprintw(term_win, 0, (term_w/2)-18, "CSCI 1730 Editor");
-
-  mvwprintw(term_win, (term_h-1), 0, "<N/A>");
-
-  mvwprintw(edit_win, edit_y, edit_x, "Replace this at some point.");
-
-  wrefresh(term_win);
-  wrefresh(edit_win);
-  int key = 1;
-  while(key != KEY_UP){
-    key = wgetch(edit_win);
-    switch(key){
-    case KEY_F(1):
-      int selection = show_menu_window(menu_h, menu_w, menu_y, menu_x);
-      wrefresh(term_win);
-      if(selection == 0){
-	 wrefresh(term_win);
-         wrefresh(edit_win);	 
-      }
-      else if(selection == 1){
-
-      }
-      else if(selection == 2){
-
-      }
-      else if(selection == 3){
-
-      }
-      else if(selection == 4){
-
-      }
-      break;
-    }
-    wrefresh(term_win);
-    wrefresh(edit_win);
-  }
-
-  delwin(edit_win);
-  delwin(term_win);;
-  endwin();
-}
-
-
+void type(
