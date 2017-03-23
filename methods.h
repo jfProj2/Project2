@@ -24,36 +24,59 @@ using namespace std;
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
+
+ 
+
 //PROTOTYPES
-string load_file(int &fd, string fileName);
+string load_file(const char * fileptr);
 bool close_file(int &fd);
 bool init_menu_window(MENU* menu, WINDOW* win, ITEM* current);
-void run_editor(string fileName);
+void run_editor(const char * fileptr);
+string get_filename(const char * fileptr);
+void file_to_screen(string data, WINDOW * win, int height, int width);
 
-//FUNCTION DEFINITIONS
-
-
-string load_file(int &fd, string fileName){
-  fd = open(fileName.c_str(), O_RDWR | O_CREAT | O_APPEND);
-  if(fd < 0){
-    int errorNum = errno;
-    printf("\nload_file: [%s]: Error.\n",fileName.c_str());
-    printf("errno: %i - %s\n\n",errorNum, strerror(errorNum));
-    return "-1";
+string load_file(const char * fileptr){
+  string filename = get_filename(fileptr);
+  int fd = open(filename.c_str(), O_RDWR | O_CREAT | O_APPEND);
+  if(fileptr == nullptr){
+    return ""; //if program opens with no file
   }
-  unsigned char buffer[1024];
-  size_t bytes_read;
-  string data = "";
-  do{
+  else if(fd < 0){
+    //int errorNum = errno;
+    //error window
+    //return int referring to type of error
+    return "";
+  }
+  else{
+    const int BUFF_SIZE = 1024;
+    char buffer[BUFF_SIZE];
+    int n = 0;
+    string data = "";
+    while((n = read(fd, buffer, BUFF_SIZE)) > 0){
+    //write?
+    	for(int i = 0; i < n; i++){
+		data += buffer[i];
+      	}
+    }
+    //file_to_screen(data, edit_win);
+    return data;
+  }
+  
+  
+  /*do{
     bytes_read = read(fd, buffer, sizeof(buffer));
     
     for(unsigned int i=0; i<bytes_read; i++)
       data += buffer[i];
 
   }while(bytes_read == sizeof(buffer));
-  return data;
+  return data;*/
+  
 
 }
+
+
+
 
 bool close_file(int &fd){
   fd = close(fd);
@@ -65,6 +88,7 @@ bool close_file(int &fd){
   }
   return true;
 }
+
 
 bool init_menu_window(MENU* menu, WINDOW* win, ITEM* current){
   int ch = 4;
@@ -93,13 +117,15 @@ bool init_menu_window(MENU* menu, WINDOW* win, ITEM* current){
   return false;
 }
 
-void run_editor(string fileName){
- 
+void run_editor(const char *fileptr){
+
   WINDOW *bg_win;
   WINDOW *edit_win;
   WINDOW *menu_win;
+  
+ 
   WINDOW *menu_subwin;
-
+  string filename = get_filename(fileptr);
   MENU *main_menu;
 
   ITEM **items;
@@ -155,9 +181,10 @@ void run_editor(string fileName){
   mvwprintw(bg_win, 0, 0, "F1: Menu");
   mvwprintw(bg_win, 0, (term_w/2)-18, "CSCI 1730 Editor");
 
-  mvwprintw(bg_win, term_h-1, 0, "<N/A>");
+  mvwprintw(bg_win, term_h-1, 0, filename.c_str());
 
   mvwprintw(edit_win, edit_y, edit_x, "Replace this at some point.");
+  file_to_screen(load_file(fileptr), edit_win, edit_h, edit_w);
 
   wrefresh(bg_win);
   wrefresh(edit_win);
@@ -192,3 +219,33 @@ void run_editor(string fileName){
 }
 
 
+string get_filename(const char * fileptr){
+  if (fileptr == nullptr){
+    return "Untitled";
+  }
+  else {
+    string fn = fileptr;
+    return fn;
+  }
+}
+
+void file_to_screen(string data, WINDOW * win, int h, int w){
+  int x = 1;
+  int y = 1;
+  int height = h - 1;
+  int width = w - 1;
+  // getmaxyx(win, height, width);
+  for(int i = 0; i < data.size(); i++){
+    int ct = 0;
+    char ch = data[i];
+    mvwprintw(win, x, y, "%c", ch);
+    if(y == (width - 1) || ch == '\n'){
+      x++;
+      y = 1;
+      mvwprintw(win, x, y,"%c", '\n');
+    }
+    y++;
+    
+  }
+ 
+}
